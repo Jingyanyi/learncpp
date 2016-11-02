@@ -182,7 +182,36 @@ public:
 
         std::cout << node->data_;
         display(node->left_, level + 1);
-        
+    }
+
+    void pre_order(SmartAvlNodePtr node)
+    {
+        if (!node) 
+            return;
+
+        std::cout<<node->data_<<", ";
+        pre_order(node->left_);
+        pre_order(node->right_);
+    }
+
+    void in_order(SmartAvlNodePtr node)
+    {
+        if (!node) 
+            return;
+
+        in_order(node->left_);
+        std::cout<<node->data_<<", ";
+        in_order(node->right_);
+    }
+
+    void post_order(SmartAvlNodePtr node)
+    {
+        if (!node) 
+            return;
+
+        post_order(node->left_);
+        post_order(node->right_);
+        std::cout<<node->data_<<", ";
     }
 };
 
