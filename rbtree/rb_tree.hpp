@@ -169,9 +169,9 @@ public:
     {
 
         // Precondition:
-        // 就是传说中的double-black情况，要求
+        // 此处的node是顶替上来的child节点了，原先的节点已经被删除了，此处主要做
+        // 调整方面的工作
         // node->color_ == BLACK
-        // node->left_/right_->color == BLACK 孩子
         // 
         // Node Parent GrandParent Sibling Silbing_l Silbing_right
         // 
@@ -187,7 +187,7 @@ public:
         // 维基百科的case分类比较的乱，这里重新整理一下
 
         // 1. 如果Silbing是红色
-        // 那么Parent肯定是黑色，重新着色Parent(为黑)和Silbling(为红)；
+        // 那么Parent肯定是黑色，重绘Parent成红，Silbling成黑色；
         // 如果N是左儿子，则进行左旋操作，否则进行右旋操作
         // 
         // 经过这一步，N有了一个黑色的兄弟和一个红色的父亲，但是N和Silbing原先的儿子
@@ -234,15 +234,19 @@ public:
         // 2.b 如果Silbing的两个孩子至少有一个是红色
         else
         {
+            // 上面经过多次旋转，此时Parent的颜色不定了
+            // 因为Sibling的孩子有红色，所以此时Sibling一定是黑色
             assert(node->get_sibling()->color_ == BLACK);
 
-            // 此时Parent和Sibling都是黑色的，这里其实跟刚开始插入的情况比较类似，
+            // 此时Sibling都是黑色的，这里其实跟刚开始插入的情况比较类似，
             // 当Sibling->r_child和Parnet-Sibling-r_child不在一条线上面，需要先旋转
-            // 成一条线，然后做颜色的修正，否则就跳过这个步骤
+            // 成一条线，然后做颜色的修正，否则就跳过这个步骤   
             if (node == node->parent_->left_
                 && node->get_sibling()->left_->color_ == RED
                 && node->get_sibling()->right_->color_ == BLACK)
             {
+                // 经过这个旋转后子树是满足二叉树性质的，但是node和新的Sibling不平衡，
+                // 这个操作不会涉及到node和Parent，而且这个不平衡会fall through到下面处理
                 node->get_sibling()->color_ = RED;
                 node->get_sibling()->left_->color_ = BLACK;
                 rotate_right(node->get_sibling()->left_);
@@ -256,6 +260,13 @@ public:
                 rotate_right(node->get_sibling()->right_);
             }
 
+            // 上面经过处理也是到达这个步骤，此时Sibling是黑色，且依次挂了红色、黑色一条线的右
+            // 子树或者左子树，通过Parent进行旋转，让原来的Sibling代替Parent的颜色，同时修改
+            // 原先Parent(成黑色)和Sibling孩子(成黑色)
+            // 由于原先的Parent和现在的Sibling颜色是不确定的，无非做两种情况讨论：
+            // (1) Parent原先是黑色的
+            // (2) Parent原先是红色的
+            // 看图都可以分析出，修改之后这条子树到子叶的黑色节点都是2，满足条件
             node->get_sibling()->color_ = node->parent_->color_;
             node->parent_->color_ = BLACK;
             if (node == node->parent_->left_)
@@ -344,7 +355,7 @@ public:
         }
 
         //
-        //叔父节点U是黑色或缺少
+        //叔父节点U是黑色或缺少(叶子节点)
         assert(node->parent_->color_ == RED && node->get_uncle()->color_ == BLACK);
         assert(node->get_grandparent()->color_ == BLACK);
 

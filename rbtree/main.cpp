@@ -37,5 +37,10 @@ int main(int argc, char* argv[])
     rbtree.remove(3);
     rbtree.display(rbtree.root_, 1);
 
+    rbtree.remove(8);
+    rbtree.remove(11);
+    rbtree.remove(26);
+    rbtree.remove(18);
+
     return 0;
 }

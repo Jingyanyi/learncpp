@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
     avltree.in_order(avltree.root_); std::cout << std::endl;
     avltree.post_order(avltree.root_); std::cout << std::endl;
 
-    avltree.root_ = avltree.remove(avltree.root_, 3);
+    avltree.root_ = avltree.remove(avltree.root_, 5);
     avltree.root_ = avltree.remove(avltree.root_, 8);
 
     avltree.display(avltree.root_, 1);
