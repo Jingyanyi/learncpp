@@ -28,5 +28,14 @@ int main(int argc, char* argv[])
 #endif
     rbtree.display(rbtree.root_, 1);
 
+    rbtree.remove(23);
+    rbtree.remove(10);
+    rbtree.display(rbtree.root_, 1);
+
+
+    rbtree.remove(7);
+    rbtree.remove(3);
+    rbtree.display(rbtree.root_, 1);
+
     return 0;
 }

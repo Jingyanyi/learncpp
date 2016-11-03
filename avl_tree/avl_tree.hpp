@@ -21,7 +21,7 @@ private:
     size_t height_;  // Store height instead of traditional balance factor
 
 public:
-    AvlNode(int data):
+    explicit AvlNode(int data):
     data_(data), height_(1) {}
 
     ~AvlNode() { std::cout << "Destructing:" << data_ << std::endl; }
@@ -148,17 +148,20 @@ public:
     SmartAvlNodePtr remove(SmartAvlNodePtr node, int data)
     {
         assert(node);
+
         if (data < node->data_)
             node->left_ = remove(node->left_, data); 
         else if (data > node->data_)
             node->right_ = remove(node->right_, data);
         else
         {
-            // if no right subtree, just return
+            // if no right subtree, just return left subtree to replace it
             if (!node->right_)
                 return node->left_;
 
             SmartAvlNodePtr repl = find_right_min(node->right_);
+
+            // using repl replace node's place with its own data
             repl->right_ = remove_right_min(node->right_);
             repl->left_  = node->left_;
             return rebalance(repl);
